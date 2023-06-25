@@ -1,7 +1,12 @@
 <template>
   <q-page class="flex column items-center">
     <section class="flex q-mt-xl">
-      <q-input v-model="message" type="text" class="q-mr-md" />
+      <q-input
+        v-model="message"
+        type="text"
+        class="q-mr-md"
+        @keyup.enter="send()"
+      />
       <q-btn dense flat @click="send()">Отправить</q-btn>
     </section>
   </q-page>
