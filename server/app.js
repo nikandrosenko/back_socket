@@ -18,17 +18,22 @@ app.listen(3000, async () => {
   console.log("Server started");
 });
 
+io.use((socket, next) => {
+  const token = socket.handshake.auth.token;
+  if (token === "secret") {
+    next();
+  } else {
+    const err = new Error("Not auth");
+    err.data = { content: "Please retry later" };
+    next(err);
+  }
+});
+
 io.on("connection", (socket) => {
-  socket.emit("connected", {
-    message: "Вы успешно подключены",
-  });
-
-  socket.on("message", (arg) => {
-    console.log(arg);
-  });
-
-  socket.on("disconnect", (reason) => {
-    console.log("Клиент был отключен! ", reason);
+  socket.on("message", (data) => {
+    socket.join("room:" + data.room);
+    io.to("room:" + data.room).emit("message", data);
+    console.log(data);
   });
 });
 
