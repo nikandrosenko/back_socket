@@ -1,17 +1,22 @@
 <template>
-  <q-page class="flex flex-center">
-    <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-vertical.svg"
-      style="width: 200px; height: 200px"
-    >
+  <q-page class="flex column items-center">
+    <section class="flex q-mt-xl">
+      <q-input v-model="message" type="text" class="q-mr-md" />
+      <q-btn dense flat @click="send()">Отправить</q-btn>
+    </section>
   </q-page>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
+import { ref } from "vue";
+import { io } from "socket.io-client";
 
-export default defineComponent({
-  name: 'IndexPage'
-})
+const socket = io("http://localhost:3001");
+
+const message = ref();
+
+const send = async () => {
+  socket.emit("message", message.value);
+  message.value = null;
+};
 </script>

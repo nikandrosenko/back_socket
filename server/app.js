@@ -8,7 +8,6 @@ const io = new Server(httpServer, {
   cors: {
     origin: "http://localhost:9000",
   },
-  /* options */
 });
 
 app.get("/", async (req, res) => {
@@ -20,7 +19,17 @@ app.listen(3000, async () => {
 });
 
 io.on("connection", (socket) => {
-  console.log("Подключен клиент", socket);
+  socket.emit("connected", {
+    message: "Вы успешно подключены",
+  });
+
+  socket.on("message", (arg) => {
+    console.log(arg);
+  });
+
+  socket.on("disconnect", (reason) => {
+    console.log("Клиент был отключен! ", reason);
+  });
 });
 
 httpServer.listen(3001);
